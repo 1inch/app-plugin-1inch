@@ -3,37 +3,24 @@
 
 // Need more information about the interface for plugins? Please read the README.md!
 
-static const uint8_t PARASWAP_SWAP_ON_UNISWAP_SELECTOR[SELECTOR_SIZE] = {0x58, 0xb9, 0xd1, 0x79};
-static const uint8_t PARASWAP_SWAP_ON_UNISWAP_FORK_SELECTOR[SELECTOR_SIZE] = {0x08,
-                                                                              0x63,
-                                                                              0xb7,
-                                                                              0xac};
-static const uint8_t PARASWAP_SIMPLE_SWAP_SELECTOR[SELECTOR_SIZE] = {0xcf, 0xc0, 0xaf, 0xeb};
-static const uint8_t PARASWAP_MULTI_SWAP_SELECTOR[SELECTOR_SIZE] = {0x8f, 0x00, 0xec, 0xcb};
-static const uint8_t PARASWAP_MEGA_SWAP_SELECTOR[SELECTOR_SIZE] = {0xec, 0x1d, 0x21, 0xdd};
-static const uint8_t PARASWAP_BUY_ON_UNISWAP_SELECTOR[SELECTOR_SIZE] = {0xf9, 0x35, 0x5f, 0x72};
-static const uint8_t PARASWAP_BUY_ON_UNISWAP_FORK_SELECTOR[SELECTOR_SIZE] = {0x33,
-                                                                             0x63,
-                                                                             0x52,
-                                                                             0x26};
-static const uint8_t PARASWAP_SIMPLE_BUY_SELECTOR[SELECTOR_SIZE] = {0xa2, 0x7e, 0x8b, 0x6b};
-static const uint8_t PARASWAP_BUY_SELECTOR[SELECTOR_SIZE] = {0xf9, 0x5a, 0x49, 0xeb};
+// You can check 1inch swap methods here
+// https://etherscan.io/address/0x11111112542d85b3ef69ae05771c2dccff4faa26#writeContract
+//
+// swap 0x7c025200
+static const uint8_t ONE_INCH_SWAP_SELECTOR[SELECTOR_SIZE] = {0x2e, 0x95, 0xb6, 0xc8};
+// unoswap 0x2e95b6c8
+static const uint8_t ONE_INCH_UNOSWAP_SELECTOR[SELECTOR_SIZE] = {0x2e, 0x95, 0xb6, 0xc8};
 
-// Array of all the different paraswap selectors.
-const uint8_t *const PARASWAP_SELECTORS[NUM_PARASWAP_SELECTORS] = {
-    PARASWAP_SWAP_ON_UNISWAP_SELECTOR,
-    PARASWAP_BUY_ON_UNISWAP_SELECTOR,
-    PARASWAP_SWAP_ON_UNISWAP_FORK_SELECTOR,
-    PARASWAP_BUY_ON_UNISWAP_FORK_SELECTOR,
-    PARASWAP_SIMPLE_SWAP_SELECTOR,
-    PARASWAP_SIMPLE_BUY_SELECTOR,
-    PARASWAP_MULTI_SWAP_SELECTOR,
-    PARASWAP_BUY_SELECTOR,
-    PARASWAP_MEGA_SWAP_SELECTOR,
+
+
+// Array of all the different 1inch selectors.
+const uint8_t *const ONE_INCH_SELECTORS[NUM_ONE_INCH_SELECTORS] = {
+    ONE_INCH_SWAP_SELECTOR,
+    ONE_INCH_UNOSWAP_SELECTOR,
 };
 
 // Paraswap uses `0xeeeee` as a dummy address to represent ETH.
-const uint8_t PARASWAP_ETH_ADDRESS[ADDRESS_LENGTH] = {0xee, 0xee, 0xee, 0xee, 0xee, 0xee, 0xee,
+const uint8_t ONE_INCH_ETH_ADDRESS[ADDRESS_LENGTH] = {0xee, 0xee, 0xee, 0xee, 0xee, 0xee, 0xee,
                                                       0xee, 0xee, 0xee, 0xee, 0xee, 0xee, 0xee,
                                                       0xee, 0xee, 0xee, 0xee, 0xee, 0xee};
 
@@ -61,8 +48,8 @@ static void handle_init_contract(void *parameters) {
     context->valid = 1;
 
     size_t i;
-    for (i = 0; i < NUM_PARASWAP_SELECTORS; i++) {
-        if (memcmp((uint8_t *) PIC(PARASWAP_SELECTORS[i]), msg->selector, SELECTOR_SIZE) == 0) {
+    for (i = 0; i < NUM_ONE_INCH_SELECTORS; i++) {
+        if (memcmp((uint8_t *) PIC(ONE_INCH_SELECTORS[i]), msg->selector, SELECTOR_SIZE) == 0) {
             context->selectorIndex = i;
             break;
         }
