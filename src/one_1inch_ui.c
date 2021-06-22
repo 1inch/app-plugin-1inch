@@ -26,7 +26,7 @@ static void prepend_ticker(char *dest, uint8_t destsize, char *ticker) {
 }
 
 // Set UI for the "Send" screen.
-static void set_send_ui(ethQueryContractUI_t *msg, paraswap_parameters_t *context) {
+static void set_send_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *context) {
     switch (context->selectorIndex) {
         case SWAP_ON_UNI_FORK:
         case SWAP_ON_UNI:
@@ -57,7 +57,7 @@ static void set_send_ui(ethQueryContractUI_t *msg, paraswap_parameters_t *contex
 }
 
 // Set UI for "Receive" screen.
-static void set_receive_ui(ethQueryContractUI_t *msg, paraswap_parameters_t *context) {
+static void set_receive_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *context) {
     switch (context->selectorIndex) {
         case SWAP_ON_UNI_FORK:
         case SWAP_ON_UNI:
@@ -88,7 +88,7 @@ static void set_receive_ui(ethQueryContractUI_t *msg, paraswap_parameters_t *con
 }
 
 // Set UI for "Beneficiary" screen.
-static void set_beneficiary_ui(ethQueryContractUI_t *msg, paraswap_parameters_t *context) {
+static void set_beneficiary_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *context) {
     strncpy(msg->title, "Beneficiary", msg->titleLength);
 
     msg->msg[0] = '0';
@@ -104,13 +104,13 @@ static void set_beneficiary_ui(ethQueryContractUI_t *msg, paraswap_parameters_t 
 
 // Set UI for "Warning" screen.
 static void set_warning_ui(ethQueryContractUI_t *msg,
-                           paraswap_parameters_t *context __attribute__((unused))) {
+                           one_inch_parameters_t *context __attribute__((unused))) {
     strncpy(msg->title, "WARNING", msg->titleLength);
     strncpy(msg->msg, "Unknown token", msg->msgLength);
 }
 
 // Helper function that returns the enum corresponding to the screen that should be displayed.
-static screens_t get_screen(ethQueryContractUI_t *msg, paraswap_parameters_t *context) {
+static screens_t get_screen(ethQueryContractUI_t *msg, one_inch_parameters_t *context) {
     uint8_t index = msg->screenIndex;
 
     bool token_sent_found = context->tokens_found & TOKEN_SENT_FOUND;
@@ -167,7 +167,7 @@ static screens_t get_screen(ethQueryContractUI_t *msg, paraswap_parameters_t *co
 
 void handle_query_contract_ui(void *parameters) {
     ethQueryContractUI_t *msg = (ethQueryContractUI_t *) parameters;
-    paraswap_parameters_t *context = (paraswap_parameters_t *) msg->pluginContext;
+    one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
 
     memset(msg->title, 0, msg->titleLength);
     memset(msg->msg, 0, msg->msgLength);

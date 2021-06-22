@@ -2,7 +2,7 @@
 
 // Store the amount sent in the form of a string, without any ticker or decimals. These will be
 // added when displaying.
-static void handle_amount_sent(ethPluginProvideParameter_t *msg, paraswap_parameters_t *context) {
+static void handle_amount_sent(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
     memset(context->amount_sent, 0, sizeof(context->amount_sent));
 
     // Convert to string.
@@ -18,7 +18,7 @@ static void handle_amount_sent(ethPluginProvideParameter_t *msg, paraswap_parame
 // Store the amount received in the form of a string, without any ticker or decimals. These will be
 // added when displaying.
 static void handle_amount_received(ethPluginProvideParameter_t *msg,
-                                   paraswap_parameters_t *context) {
+                                   one_inch_parameters_t *context) {
     memset(context->amount_received, 0, sizeof(context->amount_received));
 
     // Convert to string.
@@ -31,7 +31,7 @@ static void handle_amount_received(ethPluginProvideParameter_t *msg,
     PRINTF("AMOUNT RECEIVED: %s\n", context->amount_received);
 }
 
-static void handle_beneficiary(ethPluginProvideParameter_t *msg, paraswap_parameters_t *context) {
+static void handle_beneficiary(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
     memset(context->beneficiary, 0, sizeof(context->beneficiary));
     memcpy(context->beneficiary,
            &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
@@ -39,12 +39,12 @@ static void handle_beneficiary(ethPluginProvideParameter_t *msg, paraswap_parame
     PRINTF("BENEFICIARY: %.*H\n", ADDRESS_LENGTH, context->beneficiary);
 }
 
-static void handle_array_len(ethPluginProvideParameter_t *msg, paraswap_parameters_t *context) {
+static void handle_array_len(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
     context->array_len = msg->parameter[PARAMETER_LENGTH - 1];
     PRINTF("LIST LEN: %d\n", context->array_len);
 }
 
-static void handle_token_sent(ethPluginProvideParameter_t *msg, paraswap_parameters_t *context) {
+static void handle_token_sent(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
     memset(context->contract_address_sent, 0, sizeof(context->contract_address_sent));
     memcpy(context->contract_address_sent,
            &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
@@ -53,7 +53,7 @@ static void handle_token_sent(ethPluginProvideParameter_t *msg, paraswap_paramet
 }
 
 static void handle_token_received(ethPluginProvideParameter_t *msg,
-                                  paraswap_parameters_t *context) {
+                                  one_inch_parameters_t *context) {
     memset(context->contract_address_received, 0, sizeof(context->contract_address_received));
     memcpy(context->contract_address_received,
            &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
@@ -62,7 +62,7 @@ static void handle_token_received(ethPluginProvideParameter_t *msg,
 }
 
 static void handle_uniswap_and_forks(ethPluginProvideParameter_t *msg,
-                                     paraswap_parameters_t *context) {
+                                     one_inch_parameters_t *context) {
     switch (context->next_param) {
         case AMOUNT_SENT:  // amountIn
             handle_amount_sent(msg, context);
@@ -107,7 +107,7 @@ static void handle_uniswap_and_forks(ethPluginProvideParameter_t *msg,
     }
 }
 
-static void handle_simple_calls(ethPluginProvideParameter_t *msg, paraswap_parameters_t *context) {
+static void handle_simple_calls(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
     switch (context->next_param) {
         case TOKEN_SENT:  // fromToken
             handle_token_sent(msg, context);
@@ -142,7 +142,7 @@ static void handle_simple_calls(ethPluginProvideParameter_t *msg, paraswap_param
     }
 }
 
-static void handle_multiswap(ethPluginProvideParameter_t *msg, paraswap_parameters_t *context) {
+static void handle_multiswap(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
     switch (context->next_param) {
         case TOKEN_SENT:  // fromToken
             context->checkpoint = msg->parameterOffset;
@@ -191,7 +191,7 @@ static void handle_multiswap(ethPluginProvideParameter_t *msg, paraswap_paramete
     }
 }
 
-static void handle_buy(ethPluginProvideParameter_t *msg, paraswap_parameters_t *context) {
+static void handle_buy(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
     switch (context->next_param) {
         case TOKEN_SENT:  // fromToken
             handle_token_sent(msg, context);
@@ -222,7 +222,7 @@ static void handle_buy(ethPluginProvideParameter_t *msg, paraswap_parameters_t *
     }
 }
 
-static void handle_megaswap(ethPluginProvideParameter_t *msg, paraswap_parameters_t *context) {
+static void handle_megaswap(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
     switch (context->next_param) {
         case TOKEN_SENT:  // fromToken
             context->checkpoint = msg->parameterOffset;
@@ -288,7 +288,7 @@ static void handle_megaswap(ethPluginProvideParameter_t *msg, paraswap_parameter
 
 void handle_provide_parameter(void *parameters) {
     ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
-    paraswap_parameters_t *context = (paraswap_parameters_t *) msg->pluginContext;
+    one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
     PRINTF("eth2 plugin provide parameter %d %.*H\n",
            msg->parameterOffset,
            PARAMETER_LENGTH,

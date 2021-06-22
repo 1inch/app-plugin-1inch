@@ -27,6 +27,7 @@ extern const uint8_t NULL_ETH_ADDRESS[ADDRESS_LENGTH];
 // Returns 1 if corresponding address is the 1inch address for ETH (0xeeeee...).
 #define ADDRESS_IS_ETH(_addr) (!memcmp(_addr, ONE_INCH_ETH_ADDRESS, ADDRESS_LENGTH))
 
+// TODO: re-write and replace with enum above
 typedef enum {
     SWAP_ON_UNI,
     BUY_ON_UNI,
@@ -37,7 +38,12 @@ typedef enum {
     MULTI_SWAP,
     BUY,
     MEGA_SWAP,
-} paraswapSelector_t;
+} oneInchSelector_t;
+
+//typedef enum {
+//    SWAP,
+//    UNOSWAP,
+//} oneInchSelector_t;
 
 typedef enum {
     SEND_SCREEN,
@@ -73,7 +79,7 @@ typedef enum {
 #define DEFAULT_TICKER ""
 
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
-typedef struct paraswap_parameters_t {
+typedef struct one_inch_parameters_t {
     uint8_t amount_sent[INT256_LENGTH];
     uint8_t amount_received[INT256_LENGTH];
     char beneficiary[ADDRESS_LENGTH];
@@ -96,8 +102,8 @@ typedef struct paraswap_parameters_t {
     uint8_t array_len;
     uint8_t skip;
     // 4 * 1 + 2 * 2 + 7 * 1 == 8 + 7 == 15 bytes. There are 16 - 15 == 1 byte left.
-} paraswap_parameters_t;
+} one_inch_parameters_t;
 
 void handle_provide_parameter(void *parameters);
 void handle_query_contract_ui(void *parameters);
-void paraswap_plugin_call(int message, void *parameters);
+void one_inch_plugin_call(int message, void *parameters);

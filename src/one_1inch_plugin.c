@@ -38,12 +38,12 @@ static void handle_init_contract(void *parameters) {
         return;
     }
 
-    if (msg->pluginContextLength < sizeof(paraswap_parameters_t)) {
+    if (msg->pluginContextLength < sizeof(one_inch_parameters_t)) {
         msg->result = ETH_PLUGIN_RESULT_ERROR;
         return;
     }
 
-    paraswap_parameters_t *context = (paraswap_parameters_t *) msg->pluginContext;
+    one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
     memset(context, 0, sizeof(*context));
     context->valid = 1;
 
@@ -89,7 +89,7 @@ static void handle_init_contract(void *parameters) {
 
 static void handle_finalize(void *parameters) {
     ethPluginFinalize_t *msg = (ethPluginFinalize_t *) parameters;
-    paraswap_parameters_t *context = (paraswap_parameters_t *) msg->pluginContext;
+    one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
     PRINTF("eth2 plugin finalize\n");
     DEBUG("handle_finalize");
     if (context->valid) {
@@ -128,7 +128,7 @@ static void handle_finalize(void *parameters) {
 
 static void handle_provide_token(void *parameters) {
     ethPluginProvideToken_t *msg = (ethPluginProvideToken_t *) parameters;
-    paraswap_parameters_t *context = (paraswap_parameters_t *) msg->pluginContext;
+    one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
     PRINTF("PARASWAP plugin provide token: 0x%p, 0x%p\n", msg->token1, msg->token2);
 
     if (ADDRESS_IS_ETH(context->contract_address_sent)) {
@@ -170,7 +170,7 @@ static void handle_provide_token(void *parameters) {
 
 static void handle_query_contract_id(void *parameters) {
     ethQueryContractID_t *msg = (ethQueryContractID_t *) parameters;
-    paraswap_parameters_t *context = (paraswap_parameters_t *) msg->pluginContext;
+    one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
 
     strncpy(msg->name, PLUGIN_NAME, msg->nameLength);
 
@@ -197,7 +197,7 @@ static void handle_query_contract_id(void *parameters) {
     msg->result = ETH_PLUGIN_RESULT_OK;
 }
 
-void paraswap_plugin_call(int message, void *parameters) {
+void one_inch_plugin_call(int message, void *parameters) {
     DEBUG("hi\n\n\n");
     switch (message) {
         case ETH_PLUGIN_INIT_CONTRACT:
