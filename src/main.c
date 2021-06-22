@@ -24,7 +24,7 @@
 
 #include "glyphs.h"
 
-#include "paraswap_plugin.h"
+#include "one_inch_plugin.h"
 
 void call_app_ethereum() {
     unsigned int libcall_params[3];

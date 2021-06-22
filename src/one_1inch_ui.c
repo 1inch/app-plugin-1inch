@@ -1,4 +1,4 @@
-#include "paraswap_plugin.h"
+#include "one_inch_plugin.h"
 
 // Prepend `dest` with `ticker`.
 // Dest must be big enough to hold `ticker` + `dest` + `\0`.
