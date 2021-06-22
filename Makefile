@@ -33,9 +33,9 @@ APPNAME = "Paraswap"
 
 #prepare hsm generation
 ifeq ($(TARGET_NAME), TARGET_NANOX)
-ICONNAME=icons/nanox_app_paraswap.gif
+ICONNAME=icons/nanox_app_1inch.gif
 else
-ICONNAME=icons/nanos_app_paraswap.gif
+ICONNAME=icons/nanos_app_1inch.gif
 endif
 
 ################
