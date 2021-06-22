@@ -1,4 +1,4 @@
-# Ledger Paraswap Plugin
+# Ledger 1inch Plugin
 
 This is a plugin for the Ethereum application which helps parsing and displaying relevant information when signing a Paraswap transaction.
 

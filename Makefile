@@ -29,7 +29,7 @@ APPVERSION_N     = 0
 APPVERSION_P     = 6
 APPVERSION       = "$(APPVERSION_M).$(APPVERSION_N).$(APPVERSION_P)"
 
-APPNAME = "Paraswap"
+APPNAME = "1inch"
 
 #prepare hsm generation
 ifeq ($(TARGET_NAME), TARGET_NANOX)
