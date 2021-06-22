@@ -1,6 +1,6 @@
 # Ledger 1inch Plugin
 
-This is a plugin for the Ethereum application which helps parsing and displaying relevant information when signing a Paraswap transaction.
+This is a plugin for the Ethereum application which helps parsing and displaying relevant information when signing a 1inch transaction.
 
 ## Prerequisite
 
@@ -39,3 +39,16 @@ The flow processed in [GitHub Actions](https://github.com/features/actions) is t
 
 - Code formatting with [clang-format](http://clang.llvm.org/docs/ClangFormat.html)
 - Compilation of the application for Ledger Nano S in [ledger-app-builder](https://github.com/LedgerHQ/ledger-app-builder)
+
+## Local development
+
+How to Make:
+1) Clone app-builder docker image: https://github.com/LedgerHQ/ledger-app-builder
+2) Go to repo dir that you just clone `cd ledger-app-builder`
+3) Build it, with specific image name `docker build . -t ledger-app-builder`
+4) Launch ledger-app-builder container
+```
+docker run --rm -it -v ~/path-to/app-plugin-1inch:/app ledger-app-builder
+```
+5) Call `make` with in container
+
