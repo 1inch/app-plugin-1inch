@@ -27,23 +27,11 @@ extern const uint8_t NULL_ETH_ADDRESS[ADDRESS_LENGTH];
 // Returns 1 if corresponding address is the 1inch address for ETH (0xeeeee...).
 #define ADDRESS_IS_ETH(_addr) (!memcmp(_addr, ONE_INCH_ETH_ADDRESS, ADDRESS_LENGTH))
 
-// TODO: re-write and replace with enum above
 typedef enum {
-    SWAP_ON_UNI,
-    BUY_ON_UNI,
-    SWAP_ON_UNI_FORK,
-    BUY_ON_UNI_FORK,
-    SIMPLE_SWAP,
-    SIMPLE_BUY,
-    MULTI_SWAP,
-    BUY,
-    MEGA_SWAP,
+    SWAP,
+    UNOSWAP,
+    // TODO: UNOSWAP_PERMIT
 } oneInchSelector_t;
-
-//typedef enum {
-//    SWAP,
-//    UNOSWAP,
-//} oneInchSelector_t;
 
 typedef enum {
     SEND_SCREEN,
