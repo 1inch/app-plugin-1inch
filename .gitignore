@@ -23,3 +23,4 @@ tests/lib
 
 .devcontainer
 .vscode
+node_modules
