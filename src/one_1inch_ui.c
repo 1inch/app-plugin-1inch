@@ -28,18 +28,8 @@ static void prepend_ticker(char *dest, uint8_t destsize, char *ticker) {
 // Set UI for the "Send" screen.
 static void set_send_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *context) {
     switch (context->selectorIndex) {
-        case SWAP_ON_UNI_FORK:
-        case SWAP_ON_UNI:
-        case SIMPLE_SWAP:
-        case MEGA_SWAP:
-        case MULTI_SWAP:
+        case UNOSWAP:
             strncpy(msg->title, "Send", msg->titleLength);
-            break;
-        case BUY_ON_UNI_FORK:
-        case BUY_ON_UNI:
-        case BUY:
-        case SIMPLE_BUY:
-            strncpy(msg->title, "Send Max", msg->titleLength);
             break;
         default:
             PRINTF("Unhandled selector Index: %d\n", context->selectorIndex);
@@ -59,18 +49,8 @@ static void set_send_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *contex
 // Set UI for "Receive" screen.
 static void set_receive_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *context) {
     switch (context->selectorIndex) {
-        case SWAP_ON_UNI_FORK:
-        case SWAP_ON_UNI:
-        case SIMPLE_SWAP:
-        case MEGA_SWAP:
-        case MULTI_SWAP:
+        case UNOSWAP:
             strncpy(msg->title, "Receive Min", msg->titleLength);
-            break;
-        case BUY_ON_UNI_FORK:
-        case BUY_ON_UNI:
-        case BUY:
-        case SIMPLE_BUY:
-            strncpy(msg->title, "Receive", msg->titleLength);
             break;
         default:
             PRINTF("Unhandled selector Index: %d\n", context->selectorIndex);
@@ -88,19 +68,19 @@ static void set_receive_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *con
 }
 
 // Set UI for "Beneficiary" screen.
-static void set_beneficiary_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *context) {
-    strncpy(msg->title, "Beneficiary", msg->titleLength);
+// static void set_beneficiary_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *context) {
+//     strncpy(msg->title, "Beneficiary", msg->titleLength);
 
-    msg->msg[0] = '0';
-    msg->msg[1] = 'x';
+//     msg->msg[0] = '0';
+//     msg->msg[1] = 'x';
 
-    chain_config_t chainConfig = {0};
+//     chain_config_t chainConfig = {0};
 
-    getEthAddressStringFromBinary((uint8_t *) context->beneficiary,
-                                  (uint8_t *) msg->msg + 2,
-                                  msg->pluginSharedRW->sha3,
-                                  &chainConfig);
-}
+//     getEthAddressStringFromBinary((uint8_t *) context->beneficiary,
+//                                   (uint8_t *) msg->msg + 2,
+//                                   msg->pluginSharedRW->sha3,
+//                                   &chainConfig);
+// }
 
 // Set UI for "Warning" screen.
 static void set_warning_ui(ethQueryContractUI_t *msg,
@@ -139,29 +119,30 @@ static screens_t get_screen(ethQueryContractUI_t *msg, one_inch_parameters_t *co
         } else if (token_received_found) {
             return SEND_SCREEN;
         }
-    } else if (index == 2) {
-        if (both_tokens_found) {
-            return BENEFICIARY_SCREEN;
-        } else if (both_tokens_not_found) {
-            return WARN_SCREEN;
-        } else {
-            return RECEIVE_SCREEN;
-        }
-    } else if (index == 3) {
-        if (both_tokens_found) {
-            return ERROR;
-        } else if (both_tokens_not_found) {
-            return RECEIVE_SCREEN;
-        } else {
-            return BENEFICIARY_SCREEN;
-        }
-    } else if (index == 4) {
-        if (both_tokens_not_found) {
-            return BENEFICIARY_SCREEN;
-        } else {
-            return ERROR;
-        }
     }
+    //  else if (index == 2) {
+    //     if (both_tokens_found) {
+    //         return BENEFICIARY_SCREEN;
+    //     } else if (both_tokens_not_found) {
+    //         return WARN_SCREEN;
+    //     } else {
+    //         return RECEIVE_SCREEN;
+    //     }
+    // } else if (index == 3) {
+    //     if (both_tokens_found) {
+    //         return ERROR;
+    //     } else if (both_tokens_not_found) {
+    //         return RECEIVE_SCREEN;
+    //     } else {
+    //         return BENEFICIARY_SCREEN;
+    //     }
+    // } else if (index == 4) {
+    //     if (both_tokens_not_found) {
+    //         return BENEFICIARY_SCREEN;
+    //     } else {
+    //         return ERROR;
+    //     }
+    // }
     return ERROR;
 }
 
@@ -181,9 +162,9 @@ void handle_query_contract_ui(void *parameters) {
         case RECEIVE_SCREEN:
             set_receive_ui(msg, context);
             break;
-        case BENEFICIARY_SCREEN:
-            set_beneficiary_ui(msg, context);
-            break;
+        // case BENEFICIARY_SCREEN:
+        //     set_beneficiary_ui(msg, context);
+        //     break;
         case WARN_SCREEN:
             set_warning_ui(msg, context);
             break;

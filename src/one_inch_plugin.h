@@ -46,18 +46,18 @@ typedef enum {
 #define AMOUNT_SENT     0  // Amount sent by the user to the contract.
 #define AMOUNT_RECEIVED 1  // Amount sent by the contract to the user.
 #define TOKEN_SENT      2  // Address of the token the user is sending.
-#define TOKEN_RECEIVED  3  // Address of the token sent to the user.
-#define PATH \
-    4  // Path of the different asseths that will get swapped during the trade. First and last
-       // tokens are the ones we care about.
-#define BENEFICIARY           5  // Address to which the contract will send the tokens.
-#define OFFSET                6
-#define PATHS_OFFSET          7
-#define PATHS_LEN             8
-#define MEGA_PATHS_OFFSET     9
-#define MEGA_PATHS_LEN        10
-#define FIRST_MEGAPATH_OFFSET 11
-#define FIRST_MEGAPATH        12
+// #define TOKEN_RECEIVED  3  // Address of the token sent to the user.
+// #define PATH \
+//     4  // Path of the different asseths that will get swapped during the trade. First and last
+//        // tokens are the ones we care about.
+// #define BENEFICIARY           5  // Address to which the contract will send the tokens.
+// #define OFFSET                6
+// #define PATHS_OFFSET          7
+// #define PATHS_LEN             8
+// #define MEGA_PATHS_OFFSET     9
+// #define MEGA_PATHS_LEN        10
+// #define FIRST_MEGAPATH_OFFSET 11
+// #define FIRST_MEGAPATH        12
 #define NONE                  13  // Placeholder variant to be set when parsing is done but data is still being sent.
 
 // Number of decimals used when the token wasn't found in the CAL.
@@ -70,7 +70,7 @@ typedef enum {
 typedef struct one_inch_parameters_t {
     uint8_t amount_sent[INT256_LENGTH];
     uint8_t amount_received[INT256_LENGTH];
-    char beneficiary[ADDRESS_LENGTH];
+    // char beneficiary[ADDRESS_LENGTH];
     uint8_t contract_address_sent[ADDRESS_LENGTH];
     uint8_t contract_address_received[ADDRESS_LENGTH];
     char ticker_sent[MAX_TICKER_LEN];
