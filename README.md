@@ -25,7 +25,7 @@ Need more information about the interface, the architecture, or general stuff ab
 ## Compilation
 
 ```
-make DEBUG=1  # compile optionally with PRINTF
+make SPECULOS=1  # compile optionally with PRINTF
 make load     # load the app on the Nano using ledgerblue
 ```
 
@@ -50,39 +50,4 @@ How to Make:
 ```
 docker run --rm -it -v ~/path-to/app-plugin-1inch:/app ledger-app-builder
 ```
-5) Call `make` with in container
-
-
-Attempts to launch https://github.com/LedgerHQ/speculos:
-
-Option 1 **does not work**
-1. docker-compose up -d
-
-Option 2 **does not work**
-1. docker build -t speculos .
-2. docker run -it -v ./apps:/speculos/apps speculos --model nanos ./apps/btc.elf --sdk 1.6 --seed secret --display headless --apdu-port 40000
-
-Option 3 build with dirty hack **build works**
-
-*But App is still need x11 to localhost, And app is crashes, looks like because of some Ubuntu & Qt5 issues*
-
-1. docker build -t speculos .
-2. docker run -it -v $PWD/apps:/speculos/apps --entrypoint /bin/bash speculos
-3. apt-get install -qy \
-   cmake \
-   curl \
-   gcc-arm-linux-gnueabihf \
-   git \
-   libc6-dev-armhf-cross \
-   libvncserver-dev \
-   python3-pip \
-   qemu-user-static \
-   wget && \
-4. mkdir _build2 && cd _build2
-5. cmake ../
-6. make
-7. ln -s _build2 build
-8. /speculos.py --model nanos --display headless apps/btc.elf
-
-
-
+5) Call `make SPECULOS=1` with in container

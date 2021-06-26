@@ -73,25 +73,14 @@ else
 DEFINES   += IO_SEPROXYHAL_BUFFER_SIZE_B=128
 endif
 
+DEBUG := 0
 SPECULOS:= 0
 ifneq ($(SPECULOS), 0)
 DEFINES += SPECULOS
+DEBUG := 10
 endif
 
 # Enabling debug PRINTF
-#DEBUG:= 0
-#ifneq ($(DEBUG),0)
-#DEFINES += HAVE_STACK_OVERFLOW_CHECK
-#ifeq ($(TARGET_NAME),TARGET_NANOX)
-#DEFINES   += HAVE_PRINTF PRINTF=mcu_usb_printf
-#else
-#DEFINES   += HAVE_PRINTF PRINTF=screen_printf
-#endif
-#else
-#DEFINES   += PRINTF\(...\)=
-#endif
-
-DEBUG:=0
 ifneq ($(DEBUG),0)
         ifeq ($(TARGET_NAME),TARGET_NANOX)
                 DEFINES   += HAVE_PRINTF PRINTF=mcu_usb_printf
@@ -110,7 +99,7 @@ ifneq ($(DEBUG),0)
         endif
         endif
 else
-DEFINES   += PRINTF\(...\)=
+        DEFINES   += PRINTF\(...\)=
 endif
 
 ##############

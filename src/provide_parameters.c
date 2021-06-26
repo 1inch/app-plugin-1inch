@@ -111,6 +111,41 @@ static void handle_token_sent(ethPluginProvideParameter_t *msg, one_inch_paramet
 //     }
 // }
 
+static void handle_swap(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
+    switch (context->next_param) {
+        case TOKEN_SENT:  // fromToken
+            handle_token_sent(msg, context);
+            context->next_param = AMOUNT_SENT;
+            break;
+        // case TOKEN_RECEIVED:  // toToken
+        //     handle_token_received(msg, context);
+        //     context->next_param = AMOUNT_SENT;
+        //     break;
+        case AMOUNT_SENT:  // fromAmount
+            handle_amount_sent(msg, context);
+            context->next_param = AMOUNT_RECEIVED;
+            break;
+        case AMOUNT_RECEIVED:  // toAmount
+            handle_amount_received(msg, context);
+            context->next_param = NONE;
+            // context->skip = 4;  // callees, exchangeData, startIndexes, values.
+            // if (context->selectorIndex == SIMPLE_SWAP) {
+            //     context->skip++;  // skip field expectedAmount for simple swap.
+            // }
+            break;
+        // case BENEFICIARY:
+        //     handle_beneficiary(msg, context);
+        //     context->next_param = NONE;
+        //     break;
+        case NONE:
+            break;
+        default:
+            PRINTF("Param not supported\n");
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
 static void handle_unoswap(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
     switch (context->next_param) {
         case TOKEN_SENT:  // fromToken
@@ -317,6 +352,11 @@ void handle_provide_parameter(void *parameters) {
         switch (context->selectorIndex) {
             case UNOSWAP: {
                 handle_unoswap(msg, context);
+                break;
+            }
+
+            case SWAP: {
+                handle_swap(msg, context);
                 break;
             }
 
