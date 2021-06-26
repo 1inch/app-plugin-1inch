@@ -79,14 +79,36 @@ DEFINES += SPECULOS
 endif
 
 # Enabling debug PRINTF
-DEBUG:= 0
+#DEBUG:= 0
+#ifneq ($(DEBUG),0)
+#DEFINES += HAVE_STACK_OVERFLOW_CHECK
+#ifeq ($(TARGET_NAME),TARGET_NANOX)
+#DEFINES   += HAVE_PRINTF PRINTF=mcu_usb_printf
+#else
+#DEFINES   += HAVE_PRINTF PRINTF=screen_printf
+#endif
+#else
+#DEFINES   += PRINTF\(...\)=
+#endif
+
+DEBUG:=0
 ifneq ($(DEBUG),0)
-DEFINES += HAVE_STACK_OVERFLOW_CHECK
-ifeq ($(TARGET_NAME),TARGET_NANOX)
-DEFINES   += HAVE_PRINTF PRINTF=mcu_usb_printf
-else
-DEFINES   += HAVE_PRINTF PRINTF=screen_printf
-endif
+        ifeq ($(TARGET_NAME),TARGET_NANOX)
+                DEFINES   += HAVE_PRINTF PRINTF=mcu_usb_printf
+        else
+        ifeq ($(DEBUG),10)
+                $(warning Using semihosted PRINTF. Only run with speculos!)
+                CFLAGS    += -include src/debug_write.h
+                DEFINES   += HAVE_PRINTF PRINTF=semihosted_printf
+        else
+                DEFINES   += HAVE_PRINTF PRINTF=screen_printf
+                ifeq ($(TARGET_NAME),TARGET_NANOX)
+                        DEFINES   += HAVE_PRINTF PRINTF=mcu_usb_printf
+                else
+                        DEFINES   += HAVE_PRINTF PRINTF=screen_printf
+                endif
+        endif
+        endif
 else
 DEFINES   += PRINTF\(...\)=
 endif
