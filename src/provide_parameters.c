@@ -12,8 +12,6 @@ static void handle_amount_sent(ethPluginProvideParameter_t *msg, one_inch_parame
                    "",
                    (char *) context->amount_sent,
                    sizeof(context->amount_sent));
-    DEBUG(context->amount_sent);
-    DEBUG("\n");
     PRINTF("AMOUNT SENT: %s\n", context->amount_sent);
 }
 
@@ -30,8 +28,6 @@ static void handle_amount_received(ethPluginProvideParameter_t *msg,
                    "",  // No ticker
                    (char *) context->amount_received,
                    sizeof(context->amount_received));
-    DEBUG(context->amount_received);
-    DEBUG("\n");
     PRINTF("AMOUNT RECEIVED: %s\n", context->amount_received);
 }
 
@@ -114,7 +110,6 @@ static void handle_token_received(ethPluginProvideParameter_t *msg,
 static void handle_unoswap(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
     switch (context->next_param) {
         case TOKEN_SENT:  // fromToken
-        DEBUG("TOKEN_SENT\n");
             handle_token_sent(msg, context);
             context->next_param = AMOUNT_SENT;
             break;
@@ -123,13 +118,10 @@ static void handle_unoswap(ethPluginProvideParameter_t *msg, one_inch_parameters
         //     context->next_param = AMOUNT_SENT;
         //     break;
         case AMOUNT_SENT:  // fromAmount
-        DEBUG("AMOUNT_SENT\n");
             handle_amount_sent(msg, context);
             context->next_param = AMOUNT_RECEIVED;
-        DEBUG("AMOUNT_SENT_DONE\n");
             break;
         case AMOUNT_RECEIVED:  // toAmount
-        DEBUG("AMOUNT_REC\n");
             handle_amount_received(msg, context);
             context->next_param = NONE;
             // context->skip = 4;  // callees, exchangeData, startIndexes, values.
@@ -142,10 +134,8 @@ static void handle_unoswap(ethPluginProvideParameter_t *msg, one_inch_parameters
         //     context->next_param = NONE;
         //     break;
         case NONE:
-        DEBUG("NONE\n");
             break;
         default:
-        DEBUG("NOT SUP\n");
             PRINTF("Param not supported\n");
             msg->result = ETH_PLUGIN_RESULT_ERROR;
             break;
@@ -303,7 +293,6 @@ void handle_provide_parameter(void *parameters) {
            msg->parameterOffset,
            PARAMETER_LENGTH,
            msg->parameter);
-           DEBUG("NEXT_PARAM\n");
 
     msg->result = ETH_PLUGIN_RESULT_OK;
 
@@ -312,7 +301,6 @@ void handle_provide_parameter(void *parameters) {
     //     context->skip--;
     // } else {
         if ((context->offset) && msg->parameterOffset != context->checkpoint + context->offset) {
-            DEBUG("AAAAAA\n");
             PRINTF("offset: %d, checkpoint: %d, parameterOffset: %d\n",
                    context->offset,
                    context->checkpoint,

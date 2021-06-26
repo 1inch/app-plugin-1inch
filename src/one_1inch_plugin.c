@@ -95,7 +95,6 @@ static void handle_finalize(void *parameters) {
     ethPluginFinalize_t *msg = (ethPluginFinalize_t *) parameters;
     one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
     PRINTF("eth2 plugin finalize\n");
-    DEBUG("handle_finalize");
     if (context->valid) {
         msg->numScreens = 2;
         // if (context->selectorIndex == SIMPLE_SWAP || context->selectorIndex == SIMPLE_BUY)
@@ -193,31 +192,24 @@ static void handle_query_contract_id(void *parameters) {
 }
 
 void one_inch_plugin_call(int message, void *parameters) {
-    DEBUG("hi\n\n\n");
+    PRINTF("Handling message %d\n", message);
     switch (message) {
         case ETH_PLUGIN_INIT_CONTRACT:
-    DEBUG("init_contact\n");
             handle_init_contract(parameters);
             break;
         case ETH_PLUGIN_PROVIDE_PARAMETER:
-    DEBUG("provide_parameter\n");
             handle_provide_parameter(parameters);
-    DEBUG("provide_parameter END\n");
             break;
         case ETH_PLUGIN_FINALIZE:
-    DEBUG("finalize\n");
             handle_finalize(parameters);
             break;
         case ETH_PLUGIN_PROVIDE_TOKEN:
-    DEBUG("provide_token\n");
             handle_provide_token(parameters);
             break;
         case ETH_PLUGIN_QUERY_CONTRACT_ID:
-    DEBUG("query_contact_id\n");
             handle_query_contract_id(parameters);
             break;
         case ETH_PLUGIN_QUERY_CONTRACT_UI:
-    DEBUG("query_contract_ui\n");
             handle_query_contract_ui(parameters);
             break;
         default:
