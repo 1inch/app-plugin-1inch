@@ -49,6 +49,8 @@ all: default
 
 DEFINES   += OS_IO_SEPROXYHAL
 DEFINES   += HAVE_BAGL HAVE_SPRINTF
+DEFINES   += HAVE_IO_USB HAVE_L4_USBLIB IO_USB_MAX_ENDPOINTS=4 IO_HID_EP_LENGTH=64 HAVE_USB_APDU
+
 DEFINES   += LEDGER_MAJOR_VERSION=$(APPVERSION_M) LEDGER_MINOR_VERSION=$(APPVERSION_N) LEDGER_PATCH_VERSION=$(APPVERSION_P)
 DEFINES   += IO_HID_EP_LENGTH=64
 
@@ -71,22 +73,33 @@ else
 DEFINES   += IO_SEPROXYHAL_BUFFER_SIZE_B=128
 endif
 
+DEBUG := 0
 SPECULOS:= 0
 ifneq ($(SPECULOS), 0)
 DEFINES += SPECULOS
+DEBUG := 10
 endif
 
 # Enabling debug PRINTF
-DEBUG:= 0
 ifneq ($(DEBUG),0)
-DEFINES += HAVE_STACK_OVERFLOW_CHECK
-ifeq ($(TARGET_NAME),TARGET_NANOX)
-DEFINES   += HAVE_PRINTF PRINTF=mcu_usb_printf
+        ifeq ($(TARGET_NAME),TARGET_NANOX)
+                DEFINES   += HAVE_PRINTF PRINTF=mcu_usb_printf
+        else
+        ifeq ($(DEBUG),10)
+                $(warning Using semihosted PRINTF. Only run with speculos!)
+                CFLAGS    += -include src/debug_write.h
+                DEFINES   += HAVE_PRINTF PRINTF=semihosted_printf
+        else
+                DEFINES   += HAVE_PRINTF PRINTF=screen_printf
+                ifeq ($(TARGET_NAME),TARGET_NANOX)
+                        DEFINES   += HAVE_PRINTF PRINTF=mcu_usb_printf
+                else
+                        DEFINES   += HAVE_PRINTF PRINTF=screen_printf
+                endif
+        endif
+        endif
 else
-DEFINES   += HAVE_PRINTF PRINTF=screen_printf
-endif
-else
-DEFINES   += PRINTF\(...\)=
+        DEFINES   += PRINTF\(...\)=
 endif
 
 ##############
@@ -122,6 +135,7 @@ include $(BOLOS_SDK)/Makefile.glyphs
 
 ### variables processed by the common makefile.rules of the SDK to grab source files and include dirs
 APP_SOURCE_PATH  += src ethereum-plugin-sdk
+SDK_SOURCE_PATH  += lib_stusb lib_stusb_impl lib_u2f
 SDK_SOURCE_PATH  += lib_ux
 
 # remove UX warnings from SDK even though the plugin doesn't use it

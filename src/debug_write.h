@@ -8,3 +8,5 @@ void debug_write( char *buf);
 // If SPECULOS is not set, does nothing.
 #define DEBUG(_s)
 #endif
+
+int semihosted_printf(const char * format, ...);

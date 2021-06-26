@@ -7,7 +7,7 @@
 // https://etherscan.io/address/0x11111112542d85b3ef69ae05771c2dccff4faa26#writeContract
 //
 // swap 0x7c025200
-static const uint8_t ONE_INCH_SWAP_SELECTOR[SELECTOR_SIZE] = {0x2e, 0x95, 0xb6, 0xc8};
+static const uint8_t ONE_INCH_SWAP_SELECTOR[SELECTOR_SIZE] = {0x7c, 0x02, 0x52, 0x00};
 // unoswap 0x2e95b6c8
 static const uint8_t ONE_INCH_UNOSWAP_SELECTOR[SELECTOR_SIZE] = {0x2e, 0x95, 0xb6, 0xc8};
 
@@ -47,6 +47,7 @@ static void handle_init_contract(void *parameters) {
     memset(context, 0, sizeof(*context));
     context->valid = 1;
 
+    // Determine a function to call
     size_t i;
     for (i = 0; i < NUM_ONE_INCH_SELECTORS; i++) {
         if (memcmp((uint8_t *) PIC(ONE_INCH_SELECTORS[i]), msg->selector, SELECTOR_SIZE) == 0) {
@@ -57,27 +58,31 @@ static void handle_init_contract(void *parameters) {
 
     // Set `next_param` to be the first field we expect to parse.
     switch (context->selectorIndex) {
-        case BUY_ON_UNI_FORK:
-        case SWAP_ON_UNI_FORK:
-        case BUY_ON_UNI:
-        case SWAP_ON_UNI:
-            if (context->selectorIndex == SWAP_ON_UNI_FORK ||
-                context->selectorIndex == BUY_ON_UNI_FORK) {
-                context->skip =
-                    2;  // Skip the first two parameters (factory and initCode) for uni forks.
-            }
-            context->next_param = AMOUNT_SENT;
-            break;
-        case SIMPLE_BUY:
-        case SIMPLE_SWAP:
+        case SWAP:
+        case UNOSWAP:
             context->next_param = TOKEN_SENT;
             break;
-        case MEGA_SWAP:
-        case BUY:
-        case MULTI_SWAP:
-            context->next_param = TOKEN_SENT;
-            context->skip = 1;  // Skipping 0x20 (offset of structure)
-            break;
+        // case BUY_ON_UNI_FORK:
+        // case SWAP_ON_UNI_FORK:
+        // case BUY_ON_UNI:
+        // case SWAP_ON_UNI:
+        //     if (context->selectorIndex == SWAP_ON_UNI_FORK ||
+        //         context->selectorIndex == BUY_ON_UNI_FORK) {
+        //         context->skip =
+        //             2;  // Skip the first two parameters (factory and initCode) for uni forks.
+        //     }
+        //     context->next_param = AMOUNT_SENT;
+        //     break;
+        // case SIMPLE_BUY:
+        // case SIMPLE_SWAP:
+        //     context->next_param = TOKEN_SENT;
+        //     break;
+        // case MEGA_SWAP:
+        // case BUY:
+        // case MULTI_SWAP:
+        //     context->next_param = TOKEN_SENT;
+        //     context->skip = 1;  // Skipping 0x20 (offset of structure)
+        //     break;
         default:
             PRINTF("Missing selectorIndex\n");
             msg->result = ETH_PLUGIN_RESULT_ERROR;
@@ -91,14 +96,13 @@ static void handle_finalize(void *parameters) {
     ethPluginFinalize_t *msg = (ethPluginFinalize_t *) parameters;
     one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
     PRINTF("eth2 plugin finalize\n");
-    DEBUG("handle_finalize");
     if (context->valid) {
         msg->numScreens = 2;
-        if (context->selectorIndex == SIMPLE_SWAP || context->selectorIndex == SIMPLE_BUY)
-            if (strncmp(context->beneficiary, (char *) NULL_ETH_ADDRESS, ADDRESS_LENGTH) != 0) {
-                // An addiitonal screen is required to display the `beneficiary` field.
-                msg->numScreens += 1;
-            }
+        // if (context->selectorIndex == SIMPLE_SWAP || context->selectorIndex == SIMPLE_BUY)
+        //     if (strncmp(context->beneficiary, (char *) NULL_ETH_ADDRESS, ADDRESS_LENGTH) != 0) {
+        //         // An addiitonal screen is required to display the `beneficiary` field.
+        //         msg->numScreens += 1;
+        //     }
         if (!ADDRESS_IS_ETH(context->contract_address_sent)) {
             // Address is not ETH so we will need to look up the token in the CAL.
             msg->tokenLookup1 = context->contract_address_sent;
@@ -108,15 +112,15 @@ static void handle_finalize(void *parameters) {
         } else {
             msg->tokenLookup1 = NULL;
         }
-        if (!ADDRESS_IS_ETH(context->contract_address_received)) {
-            // Address is not ETH so we will need to look up the token in the CAL.
-            PRINTF("Setting address receiving to: %.*H\n",
-                   ADDRESS_LENGTH,
-                   context->contract_address_received);
-            msg->tokenLookup2 = context->contract_address_received;
-        } else {
-            msg->tokenLookup2 = NULL;
-        }
+        // if (!ADDRESS_IS_ETH(context->contract_address_received)) {
+        //     // Address is not ETH so we will need to look up the token in the CAL.
+        //     PRINTF("Setting address receiving to: %.*H\n",
+        //            ADDRESS_LENGTH,
+        //            context->contract_address_received);
+        //     msg->tokenLookup2 = context->contract_address_received;
+        // } else {
+        //     msg->tokenLookup2 = NULL;
+        // }
 
         msg->uiType = ETH_UI_TYPE_GENERIC;
         msg->result = ETH_PLUGIN_RESULT_OK;
@@ -175,18 +179,9 @@ static void handle_query_contract_id(void *parameters) {
     strncpy(msg->name, PLUGIN_NAME, msg->nameLength);
 
     switch (context->selectorIndex) {
-        case MEGA_SWAP:
-        case MULTI_SWAP:
-        case SIMPLE_SWAP:
-        case SWAP_ON_UNI_FORK:
-        case SWAP_ON_UNI:
+        case SWAP:
+        case UNOSWAP:
             strncpy(msg->version, "Swap", msg->versionLength);
-            break;
-        case SIMPLE_BUY:
-        case BUY_ON_UNI_FORK:
-        case BUY_ON_UNI:
-        case BUY:
-            strncpy(msg->version, "Buy", msg->versionLength);
             break;
         default:
             PRINTF("Selector Index :%d not supported\n", context->selectorIndex);
@@ -198,7 +193,7 @@ static void handle_query_contract_id(void *parameters) {
 }
 
 void one_inch_plugin_call(int message, void *parameters) {
-    DEBUG("hi\n\n\n");
+    PRINTF("Handling message %d\n", message);
     switch (message) {
         case ETH_PLUGIN_INIT_CONTRACT:
             handle_init_contract(parameters);
