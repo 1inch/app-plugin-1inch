@@ -39,27 +39,31 @@ static void handle_amount_received(ethPluginProvideParameter_t *msg,
 //     PRINTF("BENEFICIARY: %.*H\n", ADDRESS_LENGTH, context->beneficiary);
 // }
 
-static void handle_array_len(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
-    context->array_len = msg->parameter[PARAMETER_LENGTH - 1];
-    PRINTF("LIST LEN: %d\n", context->array_len);
-}
+// static void handle_array_len(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
+//     context->array_len = msg->parameter[PARAMETER_LENGTH - 1];
+//     PRINTF("LIST LEN: %d\n", context->array_len);
+// }
 
 static void handle_token_sent(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
     memset(context->contract_address_sent, 0, sizeof(context->contract_address_sent));
     memcpy(context->contract_address_sent,
            &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
            sizeof(context->contract_address_sent));
-    PRINTF("TOKEN SENT: %.*H\n", ADDRESS_LENGTH, context->contract_address_sent);
+    PRINTF("TOKEN SENT: ");
+    for(int i = 0; i < ADDRESS_LENGTH; ++i){
+        PRINTF("%02x", context->contract_address_sent[i]);
+    };
+    PRINTF("\n");
 }
 
-static void handle_token_received(ethPluginProvideParameter_t *msg,
-                                  one_inch_parameters_t *context) {
-    memset(context->contract_address_received, 0, sizeof(context->contract_address_received));
-    memcpy(context->contract_address_received,
-           &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
-           sizeof(context->contract_address_received));
-    PRINTF("TOKEN RECIEVED: %.*H\n", ADDRESS_LENGTH, context->contract_address_received);
-}
+// static void handle_token_received(ethPluginProvideParameter_t *msg,
+//                                   one_inch_parameters_t *context) {
+//     memset(context->contract_address_received, 0, sizeof(context->contract_address_received));
+//     memcpy(context->contract_address_received,
+//            &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
+//            sizeof(context->contract_address_received));
+//     PRINTF("TOKEN RECIEVED: %.*H\n", ADDRESS_LENGTH, context->contract_address_received);
+// }
 
 // static void handle_uniswap_and_forks(ethPluginProvideParameter_t *msg,
 //                                      one_inch_parameters_t *context) {
@@ -289,10 +293,11 @@ static void handle_unoswap(ethPluginProvideParameter_t *msg, one_inch_parameters
 void handle_provide_parameter(void *parameters) {
     ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
     one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
-    PRINTF("eth2 plugin provide parameter %d %.*H\n",
-           msg->parameterOffset,
-           PARAMETER_LENGTH,
-           msg->parameter);
+    PRINTF("eth2 plugin provide parameter %d ", msg->parameterOffset);
+    for(int i = 0; i < PARAMETER_LENGTH; ++i){
+        PRINTF("%02x", msg->parameter[i]);
+    };
+    PRINTF("\n");
 
     msg->result = ETH_PLUGIN_RESULT_OK;
 
