@@ -102,9 +102,12 @@ static void handle_finalize(void *parameters) {
     PRINTF("eth2 plugin finalize\n");
     if (context->valid) {
         msg->numScreens = 2;
-        if (context->selectorIndex == SWAP)
+        if (context->selectorIndex == SWAP) {
             // An addiitonal screen is required to display the `beneficiary` field.
             msg->numScreens += 1;
+            if (context->flags & PARTIAL_FILL)
+                msg->numScreens += 1;
+        }
 
         // if (context->selectorIndex == SIMPLE_SWAP || context->selectorIndex == SIMPLE_BUY)
         //     if (strncmp(context->beneficiary, (char *) NULL_ETH_ADDRESS, ADDRESS_LENGTH) != 0) {

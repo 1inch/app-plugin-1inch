@@ -72,6 +72,11 @@ static void handle_token_received(ethPluginProvideParameter_t *msg,
     };
 }
 
+static void handle_flags(ethPluginProvideParameter_t *msg,
+                                  one_inch_parameters_t *context) {
+    context->flags = msg->parameter[PARAMETER_LENGTH - 1];
+}
+
 // static void handle_uniswap_and_forks(ethPluginProvideParameter_t *msg,
 //                                      one_inch_parameters_t *context) {
 //     switch (context->next_param) {
@@ -141,11 +146,15 @@ static void handle_swap(ethPluginProvideParameter_t *msg, one_inch_parameters_t 
             break;
         case AMOUNT_RECEIVED:  // toAmount
             handle_amount_received(msg, context);
-            context->next_param = NONE;
+            context->next_param = FLAGS_PARAM;
             // context->skip = 4;  // callees, exchangeData, startIndexes, values.
             // if (context->selectorIndex == SIMPLE_SWAP) {
             //     context->skip++;  // skip field expectedAmount for simple swap.
             // }
+            break;
+        case FLAGS_PARAM:
+            handle_flags(msg, context);
+            context->next_param = NONE;
             break;
         // case BENEFICIARY:
         //     handle_beneficiary(msg, context);

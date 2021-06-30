@@ -91,6 +91,13 @@ static void set_warning_ui(ethQueryContractUI_t *msg,
     strncpy(msg->msg, "Unknown token", msg->msgLength);
 }
 
+// Set UI for "Partial fill" screen.
+static void set_partial_fill_ui(ethQueryContractUI_t *msg,
+                           one_inch_parameters_t *context __attribute__((unused))) {
+    strncpy(msg->title, "Partial fill", msg->titleLength);
+    strncpy(msg->msg, "Enabled", msg->msgLength);
+}
+
 // Helper function that returns the enum corresponding to the screen that should be displayed.
 static screens_t get_screen(ethQueryContractUI_t *msg, one_inch_parameters_t *context) {
     uint8_t index = msg->screenIndex;
@@ -129,6 +136,8 @@ static screens_t get_screen(ethQueryContractUI_t *msg, one_inch_parameters_t *co
         } else {
             return RECEIVE_SCREEN;
         }
+    } else if (index == 3) {
+        return PARTIAL_FILL_SCREEN;
     }
     // } else if (index == 3) {
     //     if (both_tokens_found) {
@@ -166,6 +175,9 @@ void handle_query_contract_ui(void *parameters) {
             break;
         case BENEFICIARY_SCREEN:
             set_beneficiary_ui(msg, context);
+            break;
+        case PARTIAL_FILL_SCREEN:
+            set_partial_fill_ui(msg, context);
             break;
         case WARN_SCREEN:
             set_warning_ui(msg, context);

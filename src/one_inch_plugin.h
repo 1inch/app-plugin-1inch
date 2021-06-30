@@ -32,11 +32,14 @@ typedef enum {
    UNOSWAP,
 } oneInchSelector_t;
 
+#define PARTIAL_FILL 1
+
 typedef enum {
     SEND_SCREEN,
     RECEIVE_SCREEN,
     WARN_SCREEN,
     BENEFICIARY_SCREEN,
+    PARTIAL_FILL_SCREEN,
     ERROR,
 } screens_t;
 
@@ -51,7 +54,7 @@ typedef enum {
 //        // tokens are the ones we care about.
 #define SRC_RECEIVER          5  // Address to which the contract will send the tokens.
 #define DST_RECEIVER          6
-// #define PATHS_OFFSET          7
+#define FLAGS_PARAM           7
 // #define PATHS_LEN             8
 // #define MEGA_PATHS_OFFSET     9
 // #define MEGA_PATHS_LEN        10
@@ -86,7 +89,7 @@ typedef struct one_inch_parameters_t {
     uint8_t decimals_sent;
     uint8_t decimals_received;
     uint8_t selectorIndex;
-    uint8_t array_len;
+    uint8_t flags;
     uint8_t skip;
     // 4 * 1 + 2 * 2 + 7 * 1 == 8 + 7 == 15 bytes. There are 16 - 15 == 1 byte left.
 } one_inch_parameters_t;
