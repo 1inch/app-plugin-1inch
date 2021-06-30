@@ -31,13 +31,17 @@ static void handle_amount_received(ethPluginProvideParameter_t *msg,
     PRINTF("AMOUNT RECEIVED: %s\n", context->amount_received);
 }
 
-// static void handle_beneficiary(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
-//     memset(context->beneficiary, 0, sizeof(context->beneficiary));
-//     memcpy(context->beneficiary,
-//            &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
-//            sizeof(context->beneficiary));
-//     PRINTF("BENEFICIARY: %.*H\n", ADDRESS_LENGTH, context->beneficiary);
-// }
+static void handle_beneficiary(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
+    memset(context->beneficiary, 0, sizeof(context->beneficiary));
+    memcpy(context->beneficiary,
+           &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
+           sizeof(context->beneficiary));
+    PRINTF("BENEFICIARY: ");
+    for(int i = 0; i < ADDRESS_LENGTH; ++i){
+        PRINTF("%02x", context->beneficiary[i]);
+    };
+    PRINTF("\n");
+}
 
 // static void handle_array_len(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
 //     context->array_len = msg->parameter[PARAMETER_LENGTH - 1];
@@ -128,6 +132,7 @@ static void handle_swap(ethPluginProvideParameter_t *msg, one_inch_parameters_t 
             context->next_param = DST_RECEIVER;
             break;
         case DST_RECEIVER:  // dstReceiver
+            handle_beneficiary(msg, context);
             context->next_param = AMOUNT_SENT;
             break;
         case AMOUNT_SENT:  // fromAmount

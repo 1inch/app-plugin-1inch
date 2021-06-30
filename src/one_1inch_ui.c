@@ -70,19 +70,19 @@ static void set_receive_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *con
 }
 
 // Set UI for "Beneficiary" screen.
-// static void set_beneficiary_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *context) {
-//     strncpy(msg->title, "Beneficiary", msg->titleLength);
+static void set_beneficiary_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *context) {
+    strncpy(msg->title, "Beneficiary", msg->titleLength);
 
-//     msg->msg[0] = '0';
-//     msg->msg[1] = 'x';
+    msg->msg[0] = '0';
+    msg->msg[1] = 'x';
 
-//     chain_config_t chainConfig = {0};
+    chain_config_t chainConfig = {0};
 
-//     getEthAddressStringFromBinary((uint8_t *) context->beneficiary,
-//                                   (uint8_t *) msg->msg + 2,
-//                                   msg->pluginSharedRW->sha3,
-//                                   &chainConfig);
-// }
+    getEthAddressStringFromBinary((uint8_t *) context->beneficiary,
+                                  (uint8_t *) msg->msg + 2,
+                                  msg->pluginSharedRW->sha3,
+                                  &chainConfig);
+}
 
 // Set UI for "Warning" screen.
 static void set_warning_ui(ethQueryContractUI_t *msg,
@@ -121,15 +121,15 @@ static screens_t get_screen(ethQueryContractUI_t *msg, one_inch_parameters_t *co
         } else if (token_received_found) {
             return SEND_SCREEN;
         }
+    } else if (index == 2) {
+        if (both_tokens_found) {
+            return BENEFICIARY_SCREEN;
+        } else if (both_tokens_not_found) {
+            return WARN_SCREEN;
+        } else {
+            return RECEIVE_SCREEN;
+        }
     }
-    //  else if (index == 2) {
-    //     if (both_tokens_found) {
-    //         return BENEFICIARY_SCREEN;
-    //     } else if (both_tokens_not_found) {
-    //         return WARN_SCREEN;
-    //     } else {
-    //         return RECEIVE_SCREEN;
-    //     }
     // } else if (index == 3) {
     //     if (both_tokens_found) {
     //         return ERROR;
@@ -164,9 +164,9 @@ void handle_query_contract_ui(void *parameters) {
         case RECEIVE_SCREEN:
             set_receive_ui(msg, context);
             break;
-        // case BENEFICIARY_SCREEN:
-        //     set_beneficiary_ui(msg, context);
-        //     break;
+        case BENEFICIARY_SCREEN:
+            set_beneficiary_ui(msg, context);
+            break;
         case WARN_SCREEN:
             set_warning_ui(msg, context);
             break;
