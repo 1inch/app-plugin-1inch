@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@ledgerhq/hw-app-eth": "^6.0.2",
+    "@ledgerhq/hw-transport-node-hid": "^6.0.2",
     "@ledgerhq/hw-transport-node-speculos": "^6.0.2",
     "@types/jest": "^26.0.23",
     "axios": "^0.21.1",

@@ -336,10 +336,10 @@ void handle_provide_parameter(void *parameters) {
 
     msg->result = ETH_PLUGIN_RESULT_OK;
 
-    // if (context->skip) {
-    //     // Skip this step, and don't forget to decrease skipping counter.
-    //     context->skip--;
-    // } else {
+    if (context->skip) {
+        // Skip this step, and don't forget to decrease skipping counter.
+        context->skip--;
+    } else {
         if ((context->offset) && msg->parameterOffset != context->checkpoint + context->offset) {
             PRINTF("offset: %d, checkpoint: %d, parameterOffset: %d\n",
                    context->offset,
@@ -365,5 +365,5 @@ void handle_provide_parameter(void *parameters) {
                 msg->result = ETH_PLUGIN_RESULT_ERROR;
                 break;
         }
-    // }
+    }
 }

@@ -19,7 +19,7 @@ const uint8_t *const ONE_INCH_SELECTORS[NUM_ONE_INCH_SELECTORS] = {
     ONE_INCH_UNOSWAP_SELECTOR,
 };
 
-// Paraswap uses `0xeeeee` as a dummy address to represent ETH.
+// 1inch uses `0xeeeee` as a dummy address to represent ETH.
 const uint8_t ONE_INCH_ETH_ADDRESS[ADDRESS_LENGTH] = {0xee, 0xee, 0xee, 0xee, 0xee, 0xee, 0xee,
                                                       0xee, 0xee, 0xee, 0xee, 0xee, 0xee, 0xee,
                                                       0xee, 0xee, 0xee, 0xee, 0xee, 0xee};
@@ -106,9 +106,11 @@ static void handle_finalize(void *parameters) {
         if (!ADDRESS_IS_ETH(context->contract_address_sent)) {
             // Address is not ETH so we will need to look up the token in the CAL.
             msg->tokenLookup1 = context->contract_address_sent;
-            PRINTF("Setting address sent to: %.*H\n",
-                   ADDRESS_LENGTH,
-                   context->contract_address_sent);
+            PRINTF("Setting address sent to: ", msg->parameterOffset);
+            for(int i = 0; i < ADDRESS_LENGTH; ++i){
+                PRINTF("%02x", context->contract_address_sent[i]);
+            };
+            PRINTF("\n");
         } else {
             msg->tokenLookup1 = NULL;
         }
@@ -133,7 +135,7 @@ static void handle_finalize(void *parameters) {
 static void handle_provide_token(void *parameters) {
     ethPluginProvideToken_t *msg = (ethPluginProvideToken_t *) parameters;
     one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
-    PRINTF("PARASWAP plugin provide token: 0x%p, 0x%p\n", msg->token1, msg->token2);
+    PRINTF("1INCH plugin provide token: 0x%p, 0x%p\n", msg->token1, msg->token2);
 
     if (ADDRESS_IS_ETH(context->contract_address_sent)) {
         context->decimals_sent = WEI_TO_ETHER;
@@ -180,8 +182,10 @@ static void handle_query_contract_id(void *parameters) {
 
     switch (context->selectorIndex) {
         case SWAP:
-        case UNOSWAP:
             strncpy(msg->version, "Swap", msg->versionLength);
+            break;
+        case UNOSWAP:
+            strncpy(msg->version, "Unoswap", msg->versionLength);
             break;
         default:
             PRINTF("Selector Index :%d not supported\n", context->selectorIndex);

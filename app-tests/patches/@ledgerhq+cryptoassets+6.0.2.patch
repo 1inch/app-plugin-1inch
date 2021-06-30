@@ -21,10 +21,10 @@ index 540ee79..5c092cc 100644
 +      "plugin": "1inch",
 +      "serialized_data": "0531696e636811111112542d85b3ef69ae05771c2dccff4faa267c025200",
 +      "signature": "30450221009a0afd48e31d3e0ec2d7c4c362b293f8893dbcacb5b705ecb92370a031bcd85e0220697a15b3eb546033a167a476c9c7cd8c24359585e6316563dadfbacaf6e3b520",
-+      // "erc20OfInterest": [
-+      //   "data.fromToken",
-+      //   "data.path.-1.to"
-+      // ]
++      "erc20OfInterest": [
++         "desc.srcToken",
++         "desc.dstToken"
++      ]
 +    },
 +    "abi": [
 +      {
