@@ -28,6 +28,7 @@ static void prepend_ticker(char *dest, uint8_t destsize, char *ticker) {
 // Set UI for the "Send" screen.
 static void set_send_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *context) {
     switch (context->selectorIndex) {
+        case SWAP:
         case UNOSWAP:
             strncpy(msg->title, "Send", msg->titleLength);
             break;
@@ -49,6 +50,7 @@ static void set_send_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *contex
 // Set UI for "Receive" screen.
 static void set_receive_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *context) {
     switch (context->selectorIndex) {
+        case SWAP:
         case UNOSWAP:
             strncpy(msg->title, "Receive Min", msg->titleLength);
             break;

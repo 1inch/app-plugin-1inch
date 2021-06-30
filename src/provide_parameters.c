@@ -56,14 +56,17 @@ static void handle_token_sent(ethPluginProvideParameter_t *msg, one_inch_paramet
     PRINTF("\n");
 }
 
-// static void handle_token_received(ethPluginProvideParameter_t *msg,
-//                                   one_inch_parameters_t *context) {
-//     memset(context->contract_address_received, 0, sizeof(context->contract_address_received));
-//     memcpy(context->contract_address_received,
-//            &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
-//            sizeof(context->contract_address_received));
-//     PRINTF("TOKEN RECIEVED: %.*H\n", ADDRESS_LENGTH, context->contract_address_received);
-// }
+static void handle_token_received(ethPluginProvideParameter_t *msg,
+                                  one_inch_parameters_t *context) {
+    memset(context->contract_address_received, 0, sizeof(context->contract_address_received));
+    memcpy(context->contract_address_received,
+           &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
+           sizeof(context->contract_address_received));
+    PRINTF("TOKEN RECEIVED: ");
+    for(int i = 0; i < ADDRESS_LENGTH; ++i){
+        PRINTF("%02x", context->contract_address_received[i]);
+    };
+}
 
 // static void handle_uniswap_and_forks(ethPluginProvideParameter_t *msg,
 //                                      one_inch_parameters_t *context) {
@@ -115,12 +118,18 @@ static void handle_swap(ethPluginProvideParameter_t *msg, one_inch_parameters_t 
     switch (context->next_param) {
         case TOKEN_SENT:  // fromToken
             handle_token_sent(msg, context);
+            context->next_param = TOKEN_RECEIVED;
+            break;
+        case TOKEN_RECEIVED:  // toToken
+            handle_token_received(msg, context);
+            context->next_param = SRC_RECEIVER;
+            break;
+        case SRC_RECEIVER:  // srcReceiver
+            context->next_param = DST_RECEIVER;
+            break;
+        case DST_RECEIVER:  // dstReceiver
             context->next_param = AMOUNT_SENT;
             break;
-        // case TOKEN_RECEIVED:  // toToken
-        //     handle_token_received(msg, context);
-        //     context->next_param = AMOUNT_SENT;
-        //     break;
         case AMOUNT_SENT:  // fromAmount
             handle_amount_sent(msg, context);
             context->next_param = AMOUNT_RECEIVED;

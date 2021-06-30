@@ -59,6 +59,10 @@ static void handle_init_contract(void *parameters) {
     // Set `next_param` to be the first field we expect to parse.
     switch (context->selectorIndex) {
         case SWAP:
+            // Skip caller, structure offset and data offset
+            context->skip = 3;
+            context->next_param = TOKEN_SENT;
+            break;
         case UNOSWAP:
             context->next_param = TOKEN_SENT;
             break;
@@ -105,24 +109,26 @@ static void handle_finalize(void *parameters) {
         //     }
         if (!ADDRESS_IS_ETH(context->contract_address_sent)) {
             // Address is not ETH so we will need to look up the token in the CAL.
-            msg->tokenLookup1 = context->contract_address_sent;
-            PRINTF("Setting address sent to: ", msg->parameterOffset);
+            PRINTF("Setting address sent to: ");
             for(int i = 0; i < ADDRESS_LENGTH; ++i){
                 PRINTF("%02x", context->contract_address_sent[i]);
             };
             PRINTF("\n");
+            msg->tokenLookup1 = context->contract_address_sent;
         } else {
             msg->tokenLookup1 = NULL;
         }
-        // if (!ADDRESS_IS_ETH(context->contract_address_received)) {
-        //     // Address is not ETH so we will need to look up the token in the CAL.
-        //     PRINTF("Setting address receiving to: %.*H\n",
-        //            ADDRESS_LENGTH,
-        //            context->contract_address_received);
-        //     msg->tokenLookup2 = context->contract_address_received;
-        // } else {
-        //     msg->tokenLookup2 = NULL;
-        // }
+        if (!ADDRESS_IS_ETH(context->contract_address_received)) {
+            // Address is not ETH so we will need to look up the token in the CAL.
+            PRINTF("Setting address received to: ");
+            for(int i = 0; i < ADDRESS_LENGTH; ++i){
+                PRINTF("%02x", context->contract_address_received[i]);
+            };
+            PRINTF("\n");
+            msg->tokenLookup2 = context->contract_address_received;
+        } else {
+            msg->tokenLookup2 = NULL;
+        }
 
         msg->uiType = ETH_UI_TYPE_GENERIC;
         msg->result = ETH_PLUGIN_RESULT_OK;

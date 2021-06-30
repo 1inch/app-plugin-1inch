@@ -28,9 +28,8 @@ extern const uint8_t NULL_ETH_ADDRESS[ADDRESS_LENGTH];
 #define ADDRESS_IS_ETH(_addr) (!memcmp(_addr, ONE_INCH_ETH_ADDRESS, ADDRESS_LENGTH))
 
 typedef enum {
-    SWAP,
-    UNOSWAP,
-    // TODO: UNOSWAP_PERMIT
+   SWAP,
+   UNOSWAP,
 } oneInchSelector_t;
 
 typedef enum {
@@ -46,12 +45,12 @@ typedef enum {
 #define AMOUNT_SENT     0  // Amount sent by the user to the contract.
 #define AMOUNT_RECEIVED 1  // Amount sent by the contract to the user.
 #define TOKEN_SENT      2  // Address of the token the user is sending.
-// #define TOKEN_RECEIVED  3  // Address of the token sent to the user.
+#define TOKEN_RECEIVED  3  // Address of the token sent to the user.
 // #define PATH \
 //     4  // Path of the different asseths that will get swapped during the trade. First and last
 //        // tokens are the ones we care about.
-// #define BENEFICIARY           5  // Address to which the contract will send the tokens.
-// #define OFFSET                6
+#define SRC_RECEIVER          5  // Address to which the contract will send the tokens.
+#define DST_RECEIVER          6
 // #define PATHS_OFFSET          7
 // #define PATHS_LEN             8
 // #define MEGA_PATHS_OFFSET     9
@@ -70,7 +69,7 @@ typedef enum {
 typedef struct one_inch_parameters_t {
     uint8_t amount_sent[INT256_LENGTH];
     uint8_t amount_received[INT256_LENGTH];
-    // char beneficiary[ADDRESS_LENGTH];
+    char beneficiary[ADDRESS_LENGTH];
     uint8_t contract_address_sent[ADDRESS_LENGTH];
     uint8_t contract_address_received[ADDRESS_LENGTH];
     char ticker_sent[MAX_TICKER_LEN];
