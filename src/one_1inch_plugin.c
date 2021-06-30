@@ -66,27 +66,6 @@ static void handle_init_contract(void *parameters) {
         case UNOSWAP:
             context->next_param = TOKEN_SENT;
             break;
-        // case BUY_ON_UNI_FORK:
-        // case SWAP_ON_UNI_FORK:
-        // case BUY_ON_UNI:
-        // case SWAP_ON_UNI:
-        //     if (context->selectorIndex == SWAP_ON_UNI_FORK ||
-        //         context->selectorIndex == BUY_ON_UNI_FORK) {
-        //         context->skip =
-        //             2;  // Skip the first two parameters (factory and initCode) for uni forks.
-        //     }
-        //     context->next_param = AMOUNT_SENT;
-        //     break;
-        // case SIMPLE_BUY:
-        // case SIMPLE_SWAP:
-        //     context->next_param = TOKEN_SENT;
-        //     break;
-        // case MEGA_SWAP:
-        // case BUY:
-        // case MULTI_SWAP:
-        //     context->next_param = TOKEN_SENT;
-        //     context->skip = 1;  // Skipping 0x20 (offset of structure)
-        //     break;
         default:
             PRINTF("Missing selectorIndex\n");
             msg->result = ETH_PLUGIN_RESULT_ERROR;
@@ -109,11 +88,6 @@ static void handle_finalize(void *parameters) {
                 msg->numScreens += 1;
         }
 
-        // if (context->selectorIndex == SIMPLE_SWAP || context->selectorIndex == SIMPLE_BUY)
-        //     if (strncmp(context->beneficiary, (char *) NULL_ETH_ADDRESS, ADDRESS_LENGTH) != 0) {
-        //         // An addiitonal screen is required to display the `beneficiary` field.
-        //         msg->numScreens += 1;
-        //     }
         if (!ADDRESS_IS_ETH(context->contract_address_sent)) {
             // Address is not ETH so we will need to look up the token in the CAL.
             PRINTF("Setting address sent to: ");
