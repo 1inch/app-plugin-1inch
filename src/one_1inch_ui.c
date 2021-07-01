@@ -127,7 +127,7 @@ static screens_t get_screen(ethQueryContractUI_t *msg, one_inch_parameters_t *co
             } else if (token_sent_found) {
                 return WARN_SCREEN;
             } else if (token_received_found) {
-                return SEND_SCREEN;
+                return RECEIVE_SCREEN;
             }
         } else if (index == 2) {
             return BENEFICIARY_SCREEN;
