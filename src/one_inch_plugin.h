@@ -18,14 +18,14 @@
 #define TOKEN_SENT_FOUND     1
 #define TOKEN_RECEIVED_FOUND 1 << 1
 
-// 1inch uses `0xeeeee` as a dummy address to represent ETH.
+// 1inch uses `0xeeeee` as a dummy address to represent ETH in Swap.
 extern const uint8_t ONE_INCH_ETH_ADDRESS[ADDRESS_LENGTH];
 
-// Address 0x00000... used to indicate that the beneficiary is the sender.
+// 1inch uses 0x00000 as a dummy address to reprecent ETH in Unmoswap.
 extern const uint8_t NULL_ETH_ADDRESS[ADDRESS_LENGTH];
 
 // Returns 1 if corresponding address is the 1inch address for ETH (0xeeeee...).
-#define ADDRESS_IS_ETH(_addr) (!memcmp(_addr, ONE_INCH_ETH_ADDRESS, ADDRESS_LENGTH))
+#define ADDRESS_IS_ETH(_addr) (!memcmp(_addr, ONE_INCH_ETH_ADDRESS, ADDRESS_LENGTH) || !memcmp(_addr, NULL_ETH_ADDRESS, ADDRESS_LENGTH))
 
 typedef enum {
    SWAP,

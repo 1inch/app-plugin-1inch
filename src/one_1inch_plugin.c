@@ -75,6 +75,18 @@ static void handle_init_contract(void *parameters) {
     msg->result = ETH_PLUGIN_RESULT_OK;
 }
 
+static void sent_token_eth(one_inch_parameters_t* context){
+    context->decimals_sent = WEI_TO_ETHER;
+    strncpy(context->ticker_sent, "ETH", sizeof(context->ticker_sent));
+    context->tokens_found |= TOKEN_SENT_FOUND;
+}
+
+static void received_token_eth(one_inch_parameters_t* context){
+    context->decimals_received = WEI_TO_ETHER;
+    strncpy(context->ticker_received, "ETH", sizeof(context->ticker_received));
+    context->tokens_found |= TOKEN_RECEIVED_FOUND;
+}
+
 static void handle_finalize(void *parameters) {
     ethPluginFinalize_t *msg = (ethPluginFinalize_t *) parameters;
     one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
@@ -97,6 +109,7 @@ static void handle_finalize(void *parameters) {
             PRINTF("\n");
             msg->tokenLookup1 = context->contract_address_sent;
         } else {
+            sent_token_eth(context);
             msg->tokenLookup1 = NULL;
         }
         if (!ADDRESS_IS_ETH(context->contract_address_received)) {
@@ -108,6 +121,7 @@ static void handle_finalize(void *parameters) {
             PRINTF("\n");
             msg->tokenLookup2 = context->contract_address_received;
         } else {
+            received_token_eth(context);
             msg->tokenLookup2 = NULL;
         }
 
@@ -125,9 +139,7 @@ static void handle_provide_token(void *parameters) {
     PRINTF("1INCH plugin provide token: 0x%p, 0x%p\n", msg->token1, msg->token2);
 
     if (ADDRESS_IS_ETH(context->contract_address_sent)) {
-        context->decimals_sent = WEI_TO_ETHER;
-        strncpy(context->ticker_sent, "ETH", sizeof(context->ticker_sent));
-        context->tokens_found |= TOKEN_SENT_FOUND;
+        sent_token_eth(context);
     } else if (msg->token1 != NULL) {
         context->decimals_sent = msg->token1->decimals;
         strncpy(context->ticker_sent, (char *) msg->token1->ticker, sizeof(context->ticker_sent));
@@ -141,9 +153,7 @@ static void handle_provide_token(void *parameters) {
     }
 
     if (ADDRESS_IS_ETH(context->contract_address_received)) {
-        context->decimals_received = WEI_TO_ETHER;
-        strncpy(context->ticker_received, "ETH", sizeof(context->ticker_received));
-        context->tokens_found |= TOKEN_RECEIVED_FOUND;
+        received_token_eth(context);
     } else if (msg->token2 != NULL) {
         context->decimals_received = msg->token2->decimals;
         strncpy(context->ticker_received,
