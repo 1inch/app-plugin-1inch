@@ -4,8 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "postinstall": "patch-package",
-    "sign": "ts-node test-sign-transaction.ts"
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@ledgerhq/hw-app-eth": "^6.0.2",
