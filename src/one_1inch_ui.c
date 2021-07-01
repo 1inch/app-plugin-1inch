@@ -129,31 +129,10 @@ static screens_t get_screen(ethQueryContractUI_t *msg, one_inch_parameters_t *co
             return SEND_SCREEN;
         }
     } else if (index == 2) {
-        if (both_tokens_found) {
-            return BENEFICIARY_SCREEN;
-        } else if (both_tokens_not_found) {
-            return WARN_SCREEN;
-        } else {
-            return RECEIVE_SCREEN;
-        }
+        return BENEFICIARY_SCREEN;
     } else if (index == 3) {
         return PARTIAL_FILL_SCREEN;
     }
-    // } else if (index == 3) {
-    //     if (both_tokens_found) {
-    //         return ERROR;
-    //     } else if (both_tokens_not_found) {
-    //         return RECEIVE_SCREEN;
-    //     } else {
-    //         return BENEFICIARY_SCREEN;
-    //     }
-    // } else if (index == 4) {
-    //     if (both_tokens_not_found) {
-    //         return BENEFICIARY_SCREEN;
-    //     } else {
-    //         return ERROR;
-    //     }
-    // }
     return ERROR;
 }
 
