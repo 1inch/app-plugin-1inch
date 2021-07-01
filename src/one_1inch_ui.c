@@ -108,31 +108,42 @@ static screens_t get_screen(ethQueryContractUI_t *msg, one_inch_parameters_t *co
     bool both_tokens_found = token_received_found && token_sent_found;
     bool both_tokens_not_found = !token_received_found && !token_sent_found;
 
-    if (index == 0) {
-        if (both_tokens_found) {
-            return SEND_SCREEN;
-        } else if (both_tokens_not_found) {
-            return WARN_SCREEN;
-        } else if (token_sent_found) {
-            return SEND_SCREEN;
-        } else if (token_received_found) {
-            return WARN_SCREEN;
+    if (context->selectorIndex == SWAP){
+        if (index == 0) {
+            if (both_tokens_found) {
+                return SEND_SCREEN;
+            } else if (both_tokens_not_found) {
+                return WARN_SCREEN;
+            } else if (token_sent_found) {
+                return SEND_SCREEN;
+            } else if (token_received_found) {
+                return WARN_SCREEN;
+            }
+        } else if (index == 1) {
+            if (both_tokens_found) {
+                return RECEIVE_SCREEN;
+            } else if (both_tokens_not_found) {
+                return SEND_SCREEN;
+            } else if (token_sent_found) {
+                return WARN_SCREEN;
+            } else if (token_received_found) {
+                return SEND_SCREEN;
+            }
+        } else if (index == 2) {
+            return BENEFICIARY_SCREEN;
+        } else if (index == 3) {
+            return PARTIAL_FILL_SCREEN;
         }
-    } else if (index == 1) {
-        if (both_tokens_found) {
-            return RECEIVE_SCREEN;
-        } else if (both_tokens_not_found) {
-            return SEND_SCREEN;
-        } else if (token_sent_found) {
-            return WARN_SCREEN;
-        } else if (token_received_found) {
-            return SEND_SCREEN;
+    } else if (context->selectorIndex == UNOSWAP){
+        if (index == 0) {
+            if (token_sent_found) {
+                return SEND_SCREEN;
+            } else {
+                return WARN_SCREEN;
+            }
         }
-    } else if (index == 2) {
-        return BENEFICIARY_SCREEN;
-    } else if (index == 3) {
-        return PARTIAL_FILL_SCREEN;
     }
+
     return ERROR;
 }
 

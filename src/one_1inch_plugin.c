@@ -80,10 +80,10 @@ static void handle_finalize(void *parameters) {
     one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
     PRINTF("eth2 plugin finalize\n");
     if (context->valid) {
-        msg->numScreens = 2;
+        msg->numScreens = 1;
         if (context->selectorIndex == SWAP) {
-            // An addiitonal screen is required to display the `beneficiary` field.
-            msg->numScreens += 1;
+            // An addiitonal screen is required to display the receive and beneficiary field.
+            msg->numScreens += 2;
             if (context->flags & PARTIAL_FILL)
                 msg->numScreens += 1;
         }
@@ -136,8 +136,8 @@ static void handle_provide_token(void *parameters) {
         // CAL did not find the token and token is not ETH.
         context->decimals_sent = DEFAULT_DECIMAL;
         strncpy(context->ticker_sent, DEFAULT_TICKER, sizeof(context->ticker_sent));
-        // We will need an additional screen to display a warning message.
-        msg->additionalScreens++;
+        // // We will need an additional screen to display a warning message.
+        // msg->additionalScreens++;
     }
 
     if (ADDRESS_IS_ETH(context->contract_address_received)) {
@@ -154,8 +154,8 @@ static void handle_provide_token(void *parameters) {
         // CAL did not find the token and token is not ETH.
         context->decimals_received = DEFAULT_DECIMAL;
         strncpy(context->ticker_received, DEFAULT_TICKER, sizeof(context->ticker_sent));
-        // We will need an additional screen to display a warning message.
-        msg->additionalScreens++;
+        // // We will need an additional screen to display a warning message.
+        // msg->additionalScreens++;
     }
 
     msg->result = ETH_PLUGIN_RESULT_OK;
