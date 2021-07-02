@@ -85,9 +85,15 @@ static void set_beneficiary_ui(ethQueryContractUI_t *msg, one_inch_parameters_t 
 }
 
 // Set UI for "Warning" screen.
-static void set_warning_ui(ethQueryContractUI_t *msg,
+static void set_warning_send_ui(ethQueryContractUI_t *msg,
                            one_inch_parameters_t *context __attribute__((unused))) {
-    strncpy(msg->title, "WARNING", msg->titleLength);
+    strncpy(msg->title, "Send", msg->titleLength);
+    strncpy(msg->msg, "Unknown token", msg->msgLength);
+}
+
+static void set_warning_receive_ui(ethQueryContractUI_t *msg,
+                           one_inch_parameters_t *context __attribute__((unused))) {
+    strncpy(msg->title, "Receive Min", msg->titleLength);
     strncpy(msg->msg, "Unknown token", msg->msgLength);
 }
 
@@ -113,11 +119,11 @@ static screens_t get_screen(ethQueryContractUI_t *msg, one_inch_parameters_t *co
             if (both_tokens_found) {
                 return SEND_SCREEN;
             } else if (both_tokens_not_found) {
-                return WARN_SCREEN;
+                return WARN_SEND_SCREEN;
             } else if (token_sent_found) {
                 return SEND_SCREEN;
             } else if (token_received_found) {
-                return WARN_SCREEN;
+                return WARN_SEND_SCREEN;
             }
         } else if (index == 1) {
             if (both_tokens_found) {
@@ -125,7 +131,7 @@ static screens_t get_screen(ethQueryContractUI_t *msg, one_inch_parameters_t *co
             } else if (both_tokens_not_found) {
                 return SEND_SCREEN;
             } else if (token_sent_found) {
-                return WARN_SCREEN;
+                return WARN_RECEIVE_SCREEN;
             } else if (token_received_found) {
                 return RECEIVE_SCREEN;
             }
@@ -139,7 +145,7 @@ static screens_t get_screen(ethQueryContractUI_t *msg, one_inch_parameters_t *co
             if (token_sent_found) {
                 return SEND_SCREEN;
             } else {
-                return WARN_SCREEN;
+                return WARN_SEND_SCREEN;
             }
         }
     }
@@ -169,8 +175,11 @@ void handle_query_contract_ui(void *parameters) {
         case PARTIAL_FILL_SCREEN:
             set_partial_fill_ui(msg, context);
             break;
-        case WARN_SCREEN:
-            set_warning_ui(msg, context);
+        case WARN_SEND_SCREEN:
+            set_warning_send_ui(msg, context);
+            break;
+        case WARN_RECEIVE_SCREEN:
+            set_warning_send_ui(msg, context);
             break;
         default:
             PRINTF("Received an invalid screenIndex\n");
