@@ -1,5 +1,13 @@
 #include "one_inch_plugin.h"
 
+void printf_hex_array(const char* title __attribute__((unused)), int len __attribute__((unused)), const uint8_t* data __attribute__((unused))){
+    PRINTF(title);
+    for(int i = 0; i < len; ++i){
+        PRINTF("%02x", data[i]);
+    };
+    PRINTF("\n");
+}
+
 // Store the amount sent in the form of a string, without any ticker or decimals. These will be
 // added when displaying.
 static void handle_amount_sent(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
@@ -36,11 +44,7 @@ static void handle_beneficiary(ethPluginProvideParameter_t *msg, one_inch_parame
     memcpy(context->beneficiary,
            &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
            sizeof(context->beneficiary));
-    PRINTF("BENEFICIARY: ");
-    for(int i = 0; i < ADDRESS_LENGTH; ++i){
-        PRINTF("%02x", context->beneficiary[i]);
-    };
-    PRINTF("\n");
+    printf_hex_array("BENEFICIARY: ", ADDRESS_LENGTH, context->beneficiary);
 }
 
 static void handle_token_sent(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
@@ -48,11 +52,7 @@ static void handle_token_sent(ethPluginProvideParameter_t *msg, one_inch_paramet
     memcpy(context->contract_address_sent,
            &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
            sizeof(context->contract_address_sent));
-    PRINTF("TOKEN SENT: ");
-    for(int i = 0; i < ADDRESS_LENGTH; ++i){
-        PRINTF("%02x", context->contract_address_sent[i]);
-    };
-    PRINTF("\n");
+    printf_hex_array("TOKEN SENT: ", ADDRESS_LENGTH, context->contract_address_sent);
 }
 
 static void handle_token_received(ethPluginProvideParameter_t *msg,
@@ -61,10 +61,7 @@ static void handle_token_received(ethPluginProvideParameter_t *msg,
     memcpy(context->contract_address_received,
            &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
            sizeof(context->contract_address_received));
-    PRINTF("TOKEN RECEIVED: ");
-    for(int i = 0; i < ADDRESS_LENGTH; ++i){
-        PRINTF("%02x", context->contract_address_received[i]);
-    };
+    printf_hex_array("TOKEN RECEIVED: ", ADDRESS_LENGTH, context->contract_address_received);
 }
 
 static void handle_flags(ethPluginProvideParameter_t *msg,
@@ -136,11 +133,7 @@ static void handle_unoswap(ethPluginProvideParameter_t *msg, one_inch_parameters
 void handle_provide_parameter(void *parameters) {
     ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
     one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
-    PRINTF("eth2 plugin provide parameter %d ", msg->parameterOffset);
-    for(int i = 0; i < PARAMETER_LENGTH; ++i){
-        PRINTF("%02x", msg->parameter[i]);
-    };
-    PRINTF("\n");
+    printf_hex_array("eth2 plugin provide parameter: ", PARAMETER_LENGTH, msg->parameter);
 
     msg->result = ETH_PLUGIN_RESULT_OK;
 

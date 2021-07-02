@@ -102,11 +102,7 @@ static void handle_finalize(void *parameters) {
 
         if (!ADDRESS_IS_ETH(context->contract_address_sent)) {
             // Address is not ETH so we will need to look up the token in the CAL.
-            PRINTF("Setting address sent to: ");
-            for(int i = 0; i < ADDRESS_LENGTH; ++i){
-                PRINTF("%02x", context->contract_address_sent[i]);
-            };
-            PRINTF("\n");
+            printf_hex_array("Setting address sent to: ", ADDRESS_LENGTH, context->contract_address_sent);
             msg->tokenLookup1 = context->contract_address_sent;
         } else {
             sent_token_eth(context);
@@ -114,11 +110,7 @@ static void handle_finalize(void *parameters) {
         }
         if (!ADDRESS_IS_ETH(context->contract_address_received)) {
             // Address is not ETH so we will need to look up the token in the CAL.
-            PRINTF("Setting address received to: ");
-            for(int i = 0; i < ADDRESS_LENGTH; ++i){
-                PRINTF("%02x", context->contract_address_received[i]);
-            };
-            PRINTF("\n");
+            printf_hex_array("Setting address received to: ", ADDRESS_LENGTH, context->contract_address_received);
             msg->tokenLookup2 = context->contract_address_received;
         } else {
             received_token_eth(context);

@@ -73,7 +73,7 @@ typedef enum {
 typedef struct one_inch_parameters_t {
     uint8_t amount_sent[INT256_LENGTH];
     uint8_t amount_received[INT256_LENGTH];
-    char beneficiary[ADDRESS_LENGTH];
+    uint8_t beneficiary[ADDRESS_LENGTH];
     uint8_t contract_address_sent[ADDRESS_LENGTH];
     uint8_t contract_address_received[ADDRESS_LENGTH];
     char ticker_sent[MAX_TICKER_LEN];
@@ -98,3 +98,4 @@ typedef struct one_inch_parameters_t {
 void handle_provide_parameter(void *parameters);
 void handle_query_contract_ui(void *parameters);
 void one_inch_plugin_call(int message, void *parameters);
+void printf_hex_array(const char* title, int len, const uint8_t* data);
