@@ -108,20 +108,14 @@ static void set_partial_fill_ui(ethQueryContractUI_t *msg,
 static screens_t get_screen(ethQueryContractUI_t *msg, one_inch_parameters_t *context) {
     uint8_t index = msg->screenIndex;
 
-    if (context->selectorIndex == SWAP){
-        if (index == 0) {
-            return SEND_SCREEN;
-        } else if (index == 1) {
-            return RECEIVE_SCREEN;
-        } else if (index == 2) {
-            return BENEFICIARY_SCREEN;
-        } else if (index == 3) {
-            return PARTIAL_FILL_SCREEN;
-        }
-    } else if (context->selectorIndex == UNOSWAP){
-        if (index == 0) {
-            return SEND_SCREEN;
-        }
+    if (index == 0) {
+        return SEND_SCREEN;
+    } else if (index == 1) {
+        return RECEIVE_SCREEN;
+    } else if (index == 2) {
+        return BENEFICIARY_SCREEN;
+    } else if (index == 3) {
+        return PARTIAL_FILL_SCREEN;
     }
 
     return ERROR;
