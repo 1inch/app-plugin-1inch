@@ -39,12 +39,25 @@ static void handle_amount_received(ethPluginProvideParameter_t *msg,
     PRINTF("AMOUNT RECEIVED: %s\n", context->amount_received);
 }
 
-static void handle_beneficiary(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
+static void handle_caller(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
     memset(context->beneficiary, 0, sizeof(context->beneficiary));
     memcpy(context->beneficiary,
            &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
            sizeof(context->beneficiary));
-    printf_hex_array("BENEFICIARY: ", ADDRESS_LENGTH, context->beneficiary);
+    printf_hex_array("CALLER: ", ADDRESS_LENGTH, context->beneficiary);
+}
+
+static void handle_beneficiary(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
+    const uint8_t* beneficiary = &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH];
+    if (memcmp(context->beneficiary, beneficiary, ADDRESS_LENGTH)){
+        context->tokens_found |= NEEDS_BENEFICIARY;
+        // Beneficiary is different from caller so we need to display it
+        memset(context->beneficiary, 0, sizeof(context->beneficiary));
+        memcpy(context->beneficiary,
+            beneficiary,
+            sizeof(context->beneficiary));
+        printf_hex_array("BENEFICIARY: ", ADDRESS_LENGTH, context->beneficiary);
+    }
 }
 
 static void handle_token_sent(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
@@ -71,6 +84,11 @@ static void handle_flags(ethPluginProvideParameter_t *msg,
 
 static void handle_swap(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
     switch (context->next_param) {
+        case CALLER:
+            handle_caller(msg, context);
+            context->skip = 2;
+            context->next_param = TOKEN_SENT;
+            break;
         case TOKEN_SENT:  // fromToken
             handle_token_sent(msg, context);
             context->next_param = TOKEN_RECEIVED;

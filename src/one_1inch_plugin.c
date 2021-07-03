@@ -60,8 +60,7 @@ static void handle_init_contract(void *parameters) {
     switch (context->selectorIndex) {
         case SWAP:
             // Skip caller, structure offset and data offset
-            context->skip = 3;
-            context->next_param = TOKEN_SENT;
+            context->next_param = CALLER;
             break;
         case UNOSWAP:
             context->next_param = TOKEN_SENT;
@@ -95,7 +94,9 @@ static void handle_finalize(void *parameters) {
         msg->numScreens = 1;
         if (context->selectorIndex == SWAP) {
             // An addiitonal screen is required to display the receive and beneficiary field.
-            msg->numScreens += 2;
+            msg->numScreens += 1;
+            if (context->tokens_found & NEEDS_BENEFICIARY)
+                msg->numScreens += 1;
             if (context->flags & PARTIAL_FILL)
                 msg->numScreens += 1;
         }
