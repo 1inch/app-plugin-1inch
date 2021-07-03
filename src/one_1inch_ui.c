@@ -6,7 +6,8 @@ static void prepend_ticker(char *dest, uint8_t destsize, char *ticker) {
     if (dest == NULL || ticker == NULL) {
         THROW(0x6503);
     }
-    uint8_t ticker_len = strlen(ticker);
+    // Add extra 1 for space
+    uint8_t ticker_len = strlen(ticker) + 1;
     uint8_t dest_len = strlen(dest);
 
     if (dest_len + ticker_len >= destsize) {
@@ -22,7 +23,9 @@ static void prepend_ticker(char *dest, uint8_t destsize, char *ticker) {
     dest[ticker_len] = dest[0];
 
     // Copy the ticker to the beginning of the string.
-    memcpy(dest, ticker, ticker_len);
+    memcpy(dest, ticker, ticker_len - 1);
+    // Add space after ticker name
+    dest[ticker_len - 1] = ' ';
 }
 
 // Set UI for the "Send" screen.
