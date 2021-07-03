@@ -113,10 +113,7 @@ static screens_t get_screen(ethQueryContractUI_t *msg, one_inch_parameters_t *co
     } else if (index == 1) {
         return RECEIVE_SCREEN;
     } else if (index == 2) {
-        if (context->tokens_found & NEEDS_BENEFICIARY)
-            return BENEFICIARY_SCREEN;
-        else
-            return PARTIAL_FILL_SCREEN;
+        return BENEFICIARY_SCREEN;
     } else if (index == 3) {
         return PARTIAL_FILL_SCREEN;
     }
