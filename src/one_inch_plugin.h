@@ -37,8 +37,6 @@ typedef enum {
 typedef enum {
     SEND_SCREEN,
     RECEIVE_SCREEN,
-    WARN_SEND_SCREEN,
-    WARN_RECEIVE_SCREEN,
     BENEFICIARY_SCREEN,
     PARTIAL_FILL_SCREEN,
     ERROR,

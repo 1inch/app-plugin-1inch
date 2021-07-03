@@ -38,6 +38,11 @@ static void set_send_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *contex
             return;
     }
 
+    if (!(context->tokens_found & TOKEN_SENT_FOUND)){
+        strncpy(msg->msg, "Unknown token", msg->msgLength);
+        return;
+    }
+
     adjustDecimals((char *) context->amount_sent,
                    strnlen((char *) context->amount_sent, sizeof(context->amount_sent)),
                    msg->msg,
@@ -58,6 +63,11 @@ static void set_receive_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *con
             PRINTF("Unhandled selector Index: %d\n", context->selectorIndex);
             msg->result = ETH_PLUGIN_RESULT_ERROR;
             return;
+    }
+
+    if (!(context->tokens_found & TOKEN_RECEIVED_FOUND)){
+        strncpy(msg->msg, "Unknown token", msg->msgLength);
+        return;
     }
 
     adjustDecimals((char *) context->amount_received,
@@ -84,19 +94,6 @@ static void set_beneficiary_ui(ethQueryContractUI_t *msg, one_inch_parameters_t 
                                   &chainConfig);
 }
 
-// Set UI for "Warning" screen.
-static void set_warning_send_ui(ethQueryContractUI_t *msg,
-                           one_inch_parameters_t *context __attribute__((unused))) {
-    strncpy(msg->title, "Send", msg->titleLength);
-    strncpy(msg->msg, "Unknown token", msg->msgLength);
-}
-
-static void set_warning_receive_ui(ethQueryContractUI_t *msg,
-                           one_inch_parameters_t *context __attribute__((unused))) {
-    strncpy(msg->title, "Receive Min", msg->titleLength);
-    strncpy(msg->msg, "Unknown token", msg->msgLength);
-}
-
 // Set UI for "Partial fill" screen.
 static void set_partial_fill_ui(ethQueryContractUI_t *msg,
                            one_inch_parameters_t *context __attribute__((unused))) {
@@ -108,33 +105,11 @@ static void set_partial_fill_ui(ethQueryContractUI_t *msg,
 static screens_t get_screen(ethQueryContractUI_t *msg, one_inch_parameters_t *context) {
     uint8_t index = msg->screenIndex;
 
-    bool token_sent_found = context->tokens_found & TOKEN_SENT_FOUND;
-    bool token_received_found = context->tokens_found & TOKEN_RECEIVED_FOUND;
-
-    bool both_tokens_found = token_received_found && token_sent_found;
-    bool both_tokens_not_found = !token_received_found && !token_sent_found;
-
     if (context->selectorIndex == SWAP){
         if (index == 0) {
-            if (both_tokens_found) {
-                return SEND_SCREEN;
-            } else if (both_tokens_not_found) {
-                return WARN_SEND_SCREEN;
-            } else if (token_sent_found) {
-                return SEND_SCREEN;
-            } else if (token_received_found) {
-                return WARN_SEND_SCREEN;
-            }
+            return SEND_SCREEN;
         } else if (index == 1) {
-            if (both_tokens_found) {
-                return RECEIVE_SCREEN;
-            } else if (both_tokens_not_found) {
-                return SEND_SCREEN;
-            } else if (token_sent_found) {
-                return WARN_RECEIVE_SCREEN;
-            } else if (token_received_found) {
-                return RECEIVE_SCREEN;
-            }
+            return RECEIVE_SCREEN;
         } else if (index == 2) {
             return BENEFICIARY_SCREEN;
         } else if (index == 3) {
@@ -142,11 +117,7 @@ static screens_t get_screen(ethQueryContractUI_t *msg, one_inch_parameters_t *co
         }
     } else if (context->selectorIndex == UNOSWAP){
         if (index == 0) {
-            if (token_sent_found) {
-                return SEND_SCREEN;
-            } else {
-                return WARN_SEND_SCREEN;
-            }
+            return SEND_SCREEN;
         }
     }
 
@@ -174,12 +145,6 @@ void handle_query_contract_ui(void *parameters) {
             break;
         case PARTIAL_FILL_SCREEN:
             set_partial_fill_ui(msg, context);
-            break;
-        case WARN_SEND_SCREEN:
-            set_warning_send_ui(msg, context);
-            break;
-        case WARN_RECEIVE_SCREEN:
-            set_warning_send_ui(msg, context);
             break;
         default:
             PRINTF("Received an invalid screenIndex\n");
